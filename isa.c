@@ -75,8 +75,21 @@ inline void op_BR(uint16_t instc){
     }
 }
 
-/* jump */
+/* jump and RET */
 inline void op_JR(uint16_t instc){
     uint16_t r0 = (instc >> 6) & 0x7;
     reg[R_PC] = reg[r0];
+}
+
+/* jump 子例程 */
+inline void op_JSR(uint16_t instc){
+    /*  JSR     LABEL
+        JSRR    BaseR */
+    uint16_t imm_flag = (instc >> 11) & 0x1;
+    if(imm_flag){
+        reg[R_PC] += sign_extend(instc & 0x7FF, 11);
+    }else{
+        uint16_t r0 = (instc >> 6) & 0x7;
+        reg[R_PC] = reg[r0];
+    }
 }
