@@ -1,6 +1,7 @@
 #include "common.h"
 #include "isa.h"
 #include "register.h"
+#include "memory.h"
 
 /* 有符号扩展, 将low视为补码有符号数 */
 inline uint16_t sign_extend(uint16_t low, uint16_t len){
@@ -18,7 +19,8 @@ inline void update_flags(uint16_t rx){
 }
 
 /* 指令集实现 */
-inline void op_add(uint16_t instc){
+/* 加法 */
+inline void op_ADD(uint16_t instc){
     /* 0x7: 通用寄存器掩码 */
     /* destination register */
     uint16_t r0 = (instc >> 9) & 0x7;
@@ -33,6 +35,33 @@ inline void op_add(uint16_t instc){
         uint16_t r2 = instc & 0x7;
         reg[r0] = reg[r1] + reg[r2];
     }
+
+    update_flags(r0);
+}
+
+/* 按位与 */
+inline void op_AND(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    uint16_t r1 = (instc >> 6) & 0x7;
+    uint16_t imm_flag = (instc >> 5) & 0x1;
+    
+    if(imm_flag){
+        uint16_t imm = instc & 0x1F;
+        reg[r0] = reg[r1] & sign_extend(imm_flag, 5);        
+    }else{
+        uint16_t r2 = instc & 0x7;
+        reg[r0] = reg[r1] & reg[r2];
+    }
+
+    update_flags(r0);
+}
+
+/* 间接内存寻址 */
+inline void op_LDI(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    uint16_t addr_offset = instc & 0x1FF;
+    uint16_t addr_mem = reg[R_PC] + sign_extend(addr_offset, 9);
+    reg[r0] = mem_read(mem_read(addr_mem));
 
     update_flags(r0);
 }
