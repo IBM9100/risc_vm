@@ -2,6 +2,7 @@
 #include "isa.h"
 #include "register.h"
 
+/* 有符号扩展, 将low视为补码有符号数 */
 inline uint16_t sign_extend(uint16_t low, uint16_t len){
     if(low >> (len - 1) & 1){
         low |= (0xFFFF << len);
@@ -9,6 +10,7 @@ inline uint16_t sign_extend(uint16_t low, uint16_t len){
     return low;
 }
 
+/* rx: 寄存器号 */
 inline void update_flags(uint16_t rx){
     if(reg[rx] == 0) reg[R_COND] = FL_ZRO;
     else if(reg[rx] >> 15) reg[R_COND] = FL_NEG;
