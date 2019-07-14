@@ -65,3 +65,18 @@ inline void op_LDI(uint16_t instc){
 
     update_flags(r0);
 }
+
+/* 条件跳转 */
+inline void op_BR(uint16_t instc){
+    uint16_t cond_flags = (instc >> 9) & 0x7;
+
+    if(cond_flags & reg[R_COND]){
+        reg[R_PC] += sign_extend(instc & 0x1FF, 9);
+    }
+}
+
+/* jump */
+inline void op_JR(uint16_t instc){
+    uint16_t r0 = (instc >> 6) & 0x7;
+    reg[R_PC] = reg[r0];
+}
