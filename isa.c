@@ -93,3 +93,48 @@ inline void op_JSR(uint16_t instc){
         reg[R_PC] = reg[r0];
     }
 }
+
+/* Load PC + offset */
+inline void op_LD(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    reg[r0] = mem_read(sign_extend(instc & 0x1FF, 0));
+
+    update_flags(r0);
+}
+
+/* Load Base + offset */
+inline void op_LDR(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    uint16_t r1 = (instc >> 6) & 0x7;
+    uint16_t offset = instc & 0x3F;
+    reg[r0] = mem_read(reg[r1] + sign_extend(offset, 6));
+
+    update_flags(r0);
+}
+
+/* Load effective address */
+inline void op_LEA(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    reg[r0] = reg[R_PC] + sign_extend(instc & 0x1FF, 9);
+
+    update_flags(r0);
+}
+
+/* 按位 NOT */
+inline void op_NOT(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    uint16_t r1 = (instc >> 6) & 0x7;
+    reg[r0] = !reg[r1];
+
+    update_flags(r0);
+}
+
+/* 用户态返回 */
+inline void op_RET(uint16_t instc){
+    op_BR(instc);
+}
+
+/* 中断返回 类似x86/IRET */
+inline void op_RTI(uint16_t instc){
+    //TODO: Return from interrupt;
+}
