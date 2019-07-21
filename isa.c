@@ -137,4 +137,32 @@ inline void op_RET(uint16_t instc){
 /* 中断返回 类似x86/IRET */
 inline void op_RTI(uint16_t instc){
     //TODO: Return from interrupt;
+    abort();
+}
+
+/* Store 直接内存写入 */
+inline void op_ST(uint16_t instc){
+    uint16_t pc_offset = sign_extend(instc & 0x1FF, 9);
+    uint16_t r0 = (instc >> 9) & 0x7;
+    mem_write(reg[R_PC] + pc_offset, reg[r0]);
+}
+
+/* Store Indirect 间接内存写入 */
+inline void op_STI(uint16_t instc){
+    uint16_t pc_offset = sign_extend(instc & 0x1FF, 9);
+    uint16_t r0 = (instc >> 9) & 0x7;
+    mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
+}
+
+/* Store Base + offset 变基址内存写入 */
+inline void op_STR(uint16_t instc){
+    uint16_t r0 = (instc >> 9) & 0x7;
+    uint16_t r1 = (instc >> 6) & 0x7;
+    uint16_t r_offset = sign_extend(instc & 0x3F, 6);
+    mem_write(mem_read(reg[r1] + r_offset), reg[r0]);
+}
+
+/* 中断陷入 */
+inline void op_TRAP(uint16_t instc){
+    //TODO: IDT
 }

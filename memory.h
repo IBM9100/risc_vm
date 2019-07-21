@@ -5,3 +5,5 @@
 uint16_t memory[UINT16_MAX];
 
 uint16_t mem_read(uint16_t address);
+
+uint16_t mem_write(uint16_t address, uint16_t content);
