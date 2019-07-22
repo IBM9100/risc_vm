@@ -2,6 +2,7 @@
 #include "isa.h"
 #include "register.h"
 #include "memory.h"
+#include "trap.h"
 
 /* 有符号扩展, 将low视为补码有符号数 */
 inline uint16_t sign_extend(uint16_t low, uint16_t len){
@@ -164,5 +165,5 @@ inline void op_STR(uint16_t instc){
 
 /* 中断陷入 */
 inline void op_TRAP(uint16_t instc){
-    //TODO: IDT
+    trap_gate(instc & 0xFF);
 }
