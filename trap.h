@@ -12,4 +12,4 @@ enum {
 };
 
 /* 中断门 */
-inline void trap_gate(uint16_t trap_vect);
+void trap_gate(uint16_t trap_vect);

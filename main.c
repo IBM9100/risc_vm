@@ -8,12 +8,13 @@
  *  3. 执行 opcode
  *  4. 跳到 1
  */
+
+int running = 1;
+
 int main(int argc, const char* argv[]){
     
     /* CPU加电稳定后执行的第一条指令 */
     reg[R_PC] = PC_START;
-
-    int32_t running = 1;
     
     while(running){
         uint16_t instrc = mem_read(reg[R_PC]++);
