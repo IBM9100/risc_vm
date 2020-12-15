@@ -49,7 +49,7 @@ void op_AND(uint16_t instc){
     
     if(imm_flag){
         uint16_t imm = instc & 0x1F;
-        reg[r0] = reg[r1] & sign_extend(imm_flag, 5);        
+        reg[r0] = reg[r1] & sign_extend(imm, 5);        
     }else{
         uint16_t r2 = instc & 0x7;
         reg[r0] = reg[r1] & reg[r2];
@@ -88,6 +88,8 @@ void op_JSR(uint16_t instc){
     /*  JSR     LABEL
         JSRR    BaseR */
     uint16_t imm_flag = (instc >> 11) & 0x1;
+    /* 保护上下文 */
+    reg[R_R7] = reg[R_PC];
     if(imm_flag){
         reg[R_PC] += sign_extend(instc & 0x7FF, 11);
     }else{
@@ -99,7 +101,7 @@ void op_JSR(uint16_t instc){
 /* Load PC + offset */
 void op_LD(uint16_t instc){
     uint16_t r0 = (instc >> 9) & 0x7;
-    reg[r0] = mem_read(sign_extend(instc & 0x1FF, 0));
+    reg[r0] = mem_read(reg[R_PC] + sign_extend(instc & 0x1FF, 0));
 
     update_flags(r0);
 }
@@ -126,7 +128,7 @@ void op_LEA(uint16_t instc){
 void op_NOT(uint16_t instc){
     uint16_t r0 = (instc >> 9) & 0x7;
     uint16_t r1 = (instc >> 6) & 0x7;
-    reg[r0] = !reg[r1];
+    reg[r0] = ~reg[r1];
 
     update_flags(r0);
 }
@@ -161,7 +163,7 @@ void op_STR(uint16_t instc){
     uint16_t r0 = (instc >> 9) & 0x7;
     uint16_t r1 = (instc >> 6) & 0x7;
     uint16_t r_offset = sign_extend(instc & 0x3F, 6);
-    mem_write(mem_read(reg[r1] + r_offset), reg[r0]);
+    mem_write(reg[r1] + r_offset, reg[r0]);
 }
 
 /* 中断陷入 */
