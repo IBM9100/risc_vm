@@ -101,7 +101,7 @@ void op_JSR(uint16_t instc){
 /* Load PC + offset */
 void op_LD(uint16_t instc){
     uint16_t r0 = (instc >> 9) & 0x7;
-    reg[r0] = mem_read(reg[R_PC] + sign_extend(instc & 0x1FF, 0));
+    reg[r0] = mem_read(reg[R_PC] + sign_extend(instc & 0x1FF, 9));
 
     update_flags(r0);
 }

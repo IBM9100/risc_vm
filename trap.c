@@ -19,9 +19,9 @@ void trap_gate(uint16_t trap_vect){
             uint16_t *p = memory + reg[R_R0];
             while(*p){
                 putchar((char)*p);
-                fflush(stdout);
                 ++p;
             }
+            fflush(stdout);
         }
         break;
     case TRAP_IN:
